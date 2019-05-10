@@ -39,12 +39,17 @@ public class DriveSystem extends Subsystem {
   public DifferentialDrive driveControl;
 
   public DriveSystem() {
-    leftMotor.setInverted(true);
+    leftMotor.setClosedLoopRampRate(0.2);
+    rightMotor.setClosedLoopRampRate(0.2);
+    leftMotor.setOpenLoopRampRate(0.2);
+    rightMotor.setOpenLoopRampRate(0.2);
+    // leftMotor.setInverted(true);
     rightMotor.setInverted(true);
     leftEncoder = leftMotor.getEncoder();
     rightEncoder = rightMotor.getEncoder();
     leftEncoder.setPositionConversionFactor(0.57);
-    rightEncoder.setPositionConversionFactor(0.57); // converting native units to inches
+    rightEncoder.setPositionConversionFactor(0.57); // converting native units to
+    // inches
     leftPidController = leftMotor.getPIDController();
     rightPidController = rightMotor.getPIDController();
     // frontLeftMotor.setInverted(true);
@@ -52,17 +57,18 @@ public class DriveSystem extends Subsystem {
     // leftMotors = new SpeedControllerGroup(backLeftMotor, frontLeftMotor);
     // rightMotors = new SpeedControllerGroup(backRightMotor, frontRightMotor);
     // driveControl = new DifferentialDrive(leftMotor, rightMotor);
+    setUpPIDController();
 
   }
 
   public void setUpPIDController() {
-    kP = 0;
+    kP = 0.0001;
     kI = 0;
     kD = 0;
     kIz = 0;
     kFF = 0;
-    kMaxOutput = 0;
-    kMinOutput = 0;
+    kMaxOutput = 1.0;
+    kMinOutput = -1.0;
     rightPidController.setP(kP);
     rightPidController.setI(kI);
     rightPidController.setD(kD);
@@ -161,10 +167,10 @@ public class DriveSystem extends Subsystem {
       kMaxOutput = max;
     }
 
-    rotations = 180;
+    // rotations = 180;
     rightPidController.setReference(rotations, ControlType.kPosition);
     leftPidController.setReference(rotations, ControlType.kPosition);
-    SmartDashboard.putNumber("SetPoint", rotations);
+    // SmartDashboard.putNumber("SetPoint", rotations);
     SmartDashboard.putNumber("Left Enc Position", leftEncoder.getPosition());
     SmartDashboard.putNumber("Right Enc Position", rightEncoder.getPosition());
 
@@ -198,6 +204,12 @@ public class DriveSystem extends Subsystem {
 
   public void driveForward(double speed, double angle) {
     driveControl.curvatureDrive(-speed, -rotateToAngleRate, true);
+  }
+
+  public void encoderPosition() {
+    SmartDashboard.putNumber("Left Enc Position", leftEncoder.getPosition() * -1);
+    SmartDashboard.putNumber("Right Enc Position", rightEncoder.getPosition());
+
   }
 
 }

@@ -11,6 +11,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.cmdDriveWithEncoder;
+import frc.robot.commands.cmdEncoderPositions;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -19,12 +20,16 @@ import frc.robot.commands.cmdDriveWithEncoder;
 public class OI {
   public Joystick xboxDriver;
   public JoystickButton yButton;
+  public JoystickButton aButton;
 
   public OI(NetworkTableInstance tableInstance) {
     xboxDriver = new Joystick(0);
 
     yButton = new JoystickButton(xboxDriver, 4);
     yButton.whenPressed(new cmdDriveWithEncoder());
+
+    aButton = new JoystickButton(xboxDriver, 1);
+    aButton.whileHeld(new cmdDriveWithEncoder());
 
   }
 
