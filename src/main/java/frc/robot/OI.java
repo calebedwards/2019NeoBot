@@ -10,8 +10,10 @@ package frc.robot;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.commands.cmdDecreaseEncoder;
 import frc.robot.commands.cmdDriveWithEncoder;
 import frc.robot.commands.cmdEncoderPositions;
+import frc.robot.commands.cmdIncreaseEncoder;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -21,6 +23,8 @@ public class OI {
   public Joystick xboxDriver;
   public JoystickButton yButton;
   public JoystickButton aButton;
+  public JoystickButton xButton;
+  public JoystickButton bButton;
 
   public OI(NetworkTableInstance tableInstance) {
     xboxDriver = new Joystick(0);
@@ -29,7 +33,13 @@ public class OI {
     yButton.whenPressed(new cmdDriveWithEncoder());
 
     aButton = new JoystickButton(xboxDriver, 1);
-    aButton.whileHeld(new cmdDriveWithEncoder());
+    aButton.whenPressed(new cmdDriveWithEncoder());
+
+    xButton = new JoystickButton(xboxDriver, 3);
+    xButton.whenPressed(new cmdDecreaseEncoder());
+
+    bButton = new JoystickButton(xboxDriver, 2);
+    bButton.whenPressed(new cmdIncreaseEncoder());
 
   }
 

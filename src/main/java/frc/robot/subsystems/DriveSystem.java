@@ -39,10 +39,10 @@ public class DriveSystem extends Subsystem {
   public DifferentialDrive driveControl;
 
   public DriveSystem() {
-    leftMotor.setClosedLoopRampRate(0.2);
-    rightMotor.setClosedLoopRampRate(0.2);
-    leftMotor.setOpenLoopRampRate(0.2);
-    rightMotor.setOpenLoopRampRate(0.2);
+    leftMotor.setClosedLoopRampRate(0.08);
+    rightMotor.setClosedLoopRampRate(0.08);
+    leftMotor.setOpenLoopRampRate(0.08);
+    rightMotor.setOpenLoopRampRate(0.08);
     // leftMotor.setInverted(true);
     rightMotor.setInverted(true);
     leftEncoder = leftMotor.getEncoder();
@@ -206,10 +206,25 @@ public class DriveSystem extends Subsystem {
     driveControl.curvatureDrive(-speed, -rotateToAngleRate, true);
   }
 
-  public void encoderPosition() {
-    SmartDashboard.putNumber("Left Enc Position", leftEncoder.getPosition() * -1);
+  public void zeroEncoder() {
+    leftEncoder.setPosition(0);
+    rightEncoder.setPosition(0);
+    leftPidController.setReference(0, ControlType.kPosition);
+    rightPidController.setReference(0, ControlType.kPosition);
+    SmartDashboard.putNumber("Left Enc Position", leftEncoder.getPosition());
     SmartDashboard.putNumber("Right Enc Position", rightEncoder.getPosition());
+  }
 
+  public void increaseSetPoint() {
+    double rotations = SmartDashboard.getNumber("Set Inches", 0);
+    rotations += 12;
+    SmartDashboard.putNumber("Set Inches", rotations);
+  }
+
+  public void decreaseSetPoint() {
+    double rotations = SmartDashboard.getNumber("Set Inches", 0);
+    rotations -= 12;
+    SmartDashboard.putNumber("Set Inches", rotations);
   }
 
 }
