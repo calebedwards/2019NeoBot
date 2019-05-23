@@ -13,6 +13,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,6 +34,10 @@ public class DriveSystem extends Subsystem {
   public CANPIDController rightPidController;
   public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
   double rotateToAngleRate;
+  double conversionFactor = (10.71) / (6.0 * Math.PI);
+  public AnalogInput encoder = new AnalogInput(RobotMap.encoder);
+  public double minVoltage = 0;
+  public double maxVoltage = 5;
 
   // SpeedControllerGroup leftMotors;
   // SpeedControllerGroup rightMotors;
@@ -47,8 +52,8 @@ public class DriveSystem extends Subsystem {
     rightMotor.setInverted(true);
     leftEncoder = leftMotor.getEncoder();
     rightEncoder = rightMotor.getEncoder();
-    leftEncoder.setPositionConversionFactor(0.57);
-    rightEncoder.setPositionConversionFactor(0.57); // converting native units to
+    // leftEncoder.setPositionConversionFactor(0.57);
+    // rightEncoder.setPositionConversionFactor(0.57); // converting native units to
     // inches
     leftPidController = leftMotor.getPIDController();
     rightPidController = rightMotor.getPIDController();
@@ -168,8 +173,8 @@ public class DriveSystem extends Subsystem {
     }
 
     // rotations = 180;
-    rightPidController.setReference(rotations, ControlType.kPosition);
-    leftPidController.setReference(rotations, ControlType.kPosition);
+    rightPidController.setReference(rotations * conversionFactor, ControlType.kPosition);
+    leftPidController.setReference(rotations * conversionFactor, ControlType.kPosition);
     // SmartDashboard.putNumber("SetPoint", rotations);
     SmartDashboard.putNumber("Left Enc Position", leftEncoder.getPosition());
     SmartDashboard.putNumber("Right Enc Position", rightEncoder.getPosition());

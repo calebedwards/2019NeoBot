@@ -61,6 +61,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    SmartDashboard.putNumber("Encoder Value", Robot.driveSystem.encoder.getAverageVoltage());
   }
 
   /**
