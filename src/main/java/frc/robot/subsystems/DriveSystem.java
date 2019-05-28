@@ -35,13 +35,14 @@ public class DriveSystem extends Subsystem {
   public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
   double rotateToAngleRate;
   double conversionFactor = (10.71) / (6.0 * Math.PI);
-  public AnalogInput encoder = new AnalogInput(RobotMap.encoder);
-  public double minVoltage = 0;
   public double maxVoltage = 5;
 
   // SpeedControllerGroup leftMotors;
   // SpeedControllerGroup rightMotors;
   public DifferentialDrive driveControl;
+
+  public AnalogInput testEncoder = new AnalogInput(RobotMap.encoderFL);
+  public AnalogInput testV = new AnalogInput(RobotMap.test);
 
   public DriveSystem() {
     leftMotor.setClosedLoopRampRate(0.08);

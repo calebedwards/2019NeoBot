@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.DriveSystem;
+import frc.robot.subsystems.SwerveModule;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -26,6 +27,7 @@ import frc.robot.subsystems.DriveSystem;
 public class Robot extends TimedRobot {
   public static OI oi;
   public static DriveSystem driveSystem;
+  public static SwerveModule testSwerveModule;
   public static NetworkTableInstance tableInstance;
 
   Command m_autonomousCommand;
@@ -41,6 +43,8 @@ public class Robot extends TimedRobot {
   public void robotInit() {
 
     driveSystem = new DriveSystem();
+    // testSwerveModule = new SwerveModule(1, RobotMap.angleMotorFL,
+    // RobotMap.driveMotorFL, RobotMap.encoderFL, 0);
     oi = new OI(tableInstance);
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
@@ -61,7 +65,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    SmartDashboard.putNumber("Encoder Value", Robot.driveSystem.encoder.getAverageVoltage());
+    SmartDashboard.putNumber("Encoder Value", Robot.driveSystem.testEncoder.getAverageVoltage());
+    SmartDashboard.putNumber("Test Voltage", Robot.driveSystem.testV.getAverageVoltage());
+
   }
 
   /**

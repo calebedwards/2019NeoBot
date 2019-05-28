@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -32,12 +33,15 @@ public class SwerveModule extends Subsystem implements PIDOutput {
 
   public PIDController pidAngle;
   public CANPIDController pidDrive;
-  public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, kToleranceVolts;
+  public double d_kP, d_kI, d_kD, d_kIz, d_kFF, d_kMaxOutput, d_kMinOutput, d_kToleranceVolts;
+  public double a_kP, a_kI, a_kD, a_kIz, a_kFF, a_kMaxOutput, a_kMinOutput, a_kToleranceVolts;
 
   private boolean driveInverted = false;
   private double mLastError = 0;
   private double lastTargetAngle = 0;
   double angleSpeed;
+  double minVoltage = 0.0;
+  double maxVoltage = 5.0;
 
   public AnalogInput mEncoder;
 
@@ -48,6 +52,7 @@ public class SwerveModule extends Subsystem implements PIDOutput {
     this.mZeroOffset = zeroOffset;
     this.mAngleMotor = new CANSparkMax(angleMotorID, MotorType.kBrushless);
     this.mDriveMotor = new CANSparkMax(driveMotorID, MotorType.kBrushless);
+    pidDrive = mDriveMotor.getPIDController();
     this.mEncoder = new AnalogInput(encoderID);
 
   }
@@ -59,60 +64,62 @@ public class SwerveModule extends Subsystem implements PIDOutput {
   }
 
   public void driveMotorPIDController() {
-    kP = 0.0001;
-    kI = 0;
-    kD = 0;
-    kIz = 0;
-    kFF = 0;
-    kMaxOutput = 1.0;
-    kMinOutput = -1.0;
+    d_kP = 0.0001;
+    d_kI = 0;
+    d_kD = 0;
+    d_kIz = 0;
+    d_kFF = 0;
+    d_kMaxOutput = 1.0;
+    d_kMinOutput = -1.0;
 
-    pidDrive.setP(kP);
-    pidDrive.setI(kI);
-    pidDrive.setD(kD);
-    pidDrive.setIZone(kIz);
-    pidDrive.setFF(kFF);
-    pidDrive.setOutputRange(kMinOutput, kMaxOutput);
+    pidDrive.setP(d_kP);
+    pidDrive.setI(d_kI);
+    pidDrive.setD(d_kD);
+    pidDrive.setIZone(d_kIz);
+    pidDrive.setFF(d_kFF);
+    pidDrive.setOutputRange(d_kMinOutput, d_kMaxOutput);
 
-    SmartDashboard.putNumber("P - drive", kP);
-    SmartDashboard.putNumber("I - drive", kI);
-    SmartDashboard.putNumber("D - drive", kD);
-    SmartDashboard.putNumber("I - drive", kIz);
-    SmartDashboard.putNumber("Feed Forward - d", kFF);
-    SmartDashboard.putNumber("Max Drive Output", kMaxOutput);
-    SmartDashboard.putNumber("Min Drive Output", kMinOutput);
+    SmartDashboard.putNumber("P - drive", d_kP);
+    SmartDashboard.putNumber("I - drive", d_kI);
+    SmartDashboard.putNumber("D - drive", d_kD);
+    SmartDashboard.putNumber("I - drive", d_kIz);
+    SmartDashboard.putNumber("Feed Forward - d", d_kFF);
+    SmartDashboard.putNumber("Max Drive Output", d_kMaxOutput);
+    SmartDashboard.putNumber("Min Drive Output", d_kMinOutput);
     SmartDashboard.putNumber("Set Inches", 0);
   }
 
   public void angleMotorPIDController() {
-    kP = 0.0001;
-    kI = 0;
-    kD = 0;
-    kIz = 0;
-    kFF = 0;
-    kMaxOutput = 1.0;
-    kMinOutput = -1.0;
-    kToleranceVolts = 0;
-    pidAngle = new PIDController(kP, kI, kD, testEncoder, this);
+    a_kP = 0.0001;
+    a_kI = 0;
+    a_kD = 0;
+    a_kIz = 0;
+    a_kFF = 0;
+    a_kMaxOutput = 1.0;
+    a_kMinOutput = -1.0;
+    a_kToleranceVolts = 0;
+    pidAngle = new PIDController(a_kP, a_kI, a_kD, testEncoder, this);
     pidAngle.setInputRange(0, 5.0);
     pidAngle.setOutputRange(-0.5, 1.0);
-    pidAngle.setAbsoluteTolerance(kToleranceVolts);
+    pidAngle.setAbsoluteTolerance(a_kToleranceVolts);
     pidAngle.setContinuous(true);
+    pidAngle.setOutputRange(a_kMinOutput, a_kMaxOutput);
 
-    pidAngle.setP(kP);
-    pidAngle.setI(kI);
-    pidAngle.setD(kD);
-    // pidAngle.setIZone(kIz);
-    // pidAngle.setFF(kFF);
-    pidAngle.setOutputRange(kMinOutput, kMaxOutput);
-
-    SmartDashboard.putNumber("P - angle", kP);
-    SmartDashboard.putNumber("I - angle", kI);
-    SmartDashboard.putNumber("D - angle", kD);
-    SmartDashboard.putNumber("I - angle", kIz);
-    SmartDashboard.putNumber("Max Angle Output", kMaxOutput);
-    SmartDashboard.putNumber("Min Angle Output", kMinOutput);
+    SmartDashboard.putNumber("P - angle", a_kP);
+    SmartDashboard.putNumber("I - angle", a_kI);
+    SmartDashboard.putNumber("D - angle", a_kD);
+    SmartDashboard.putNumber("I - angle", a_kIz);
+    SmartDashboard.putNumber("Max Angle Output", a_kMaxOutput);
+    SmartDashboard.putNumber("Min Angle Output", a_kMinOutput);
     // SmartDashboard.putNumber("Set Angle Inches", 0);
+  }
+
+  private double angleToVoltage(double angle) {
+    return angle * ((maxVoltage - minVoltage) / 360.0);
+  }
+
+  private double voltageToAngle(double voltage) {
+    return (voltage * (360.0 / (maxVoltage - minVoltage))) % 360.0;
   }
 
   public void setDriveInverted(boolean inverted) {
@@ -131,7 +138,7 @@ public class SwerveModule extends Subsystem implements PIDOutput {
 
     // double currentAngle = mAngleMotor.getSelectedSensorPosition(0) * (360.0 /
     // 1024.0);
-    double currentAngle = mEncoder.getAverageVoltage() * (360.0 / 1024.0);
+    double currentAngle = voltageToAngle(mEncoder.getAverageVoltage());
     double currentAngleMod = currentAngle % 360;
     if (currentAngleMod < 0)
       currentAngleMod += 360;
@@ -157,19 +164,17 @@ public class SwerveModule extends Subsystem implements PIDOutput {
 
     targetAngle += currentAngle - currentAngleMod;
 
-    // double currentError = mAngleMotor.getClosedLoopError(0);
+    // targetAngle *= 1024.0 / 360.0;
+    targetAngle = angleToVoltage(targetAngle);
 
-    // mLastError = currentError;
-    targetAngle *= 1024.0 / 360.0;
-    // mAngleMotor.set(ControlMode.Position, targetAngle);
-    // figure that one out ^
+    pidAngle.setSetpoint(targetAngle);
   }
 
   public void setTargetSpeed(double speed) {
     if (driveInverted) {
       speed = -speed;
     }
-    mDriveMotor.set(speed);
+    pidDrive.setReference(speed, ControlType.kVelocity);
   }
 
   @Override
