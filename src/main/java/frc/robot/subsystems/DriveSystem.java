@@ -42,7 +42,6 @@ public class DriveSystem extends Subsystem {
   public DifferentialDrive driveControl;
 
   public AnalogInput testEncoder = new AnalogInput(RobotMap.encoderFL);
-  public AnalogInput testV = new AnalogInput(RobotMap.test);
 
   public DriveSystem() {
     leftMotor.setClosedLoopRampRate(0.08);

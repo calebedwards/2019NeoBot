@@ -14,6 +14,7 @@ import frc.robot.commands.cmdDecreaseEncoder;
 import frc.robot.commands.cmdDriveWithEncoder;
 import frc.robot.commands.cmdEncoderPositions;
 import frc.robot.commands.cmdIncreaseEncoder;
+import frc.robot.input.JoystickX3D;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -21,13 +22,15 @@ import frc.robot.commands.cmdIncreaseEncoder;
  */
 public class OI {
   public Joystick xboxDriver;
+  public JoystickX3D joystickDriver;
   public JoystickButton yButton;
   public JoystickButton aButton;
   public JoystickButton xButton;
   public JoystickButton bButton;
 
   public OI(NetworkTableInstance tableInstance) {
-    xboxDriver = new Joystick(0);
+    xboxDriver = new Joystick(1);
+    joystickDriver = new JoystickX3D(0);
 
     yButton = new JoystickButton(xboxDriver, 4);
     yButton.whenPressed(new cmdDriveWithEncoder());

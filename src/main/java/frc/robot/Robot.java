@@ -43,8 +43,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
 
     driveSystem = new DriveSystem();
-    // testSwerveModule = new SwerveModule(1, RobotMap.angleMotorFL,
-    // RobotMap.driveMotorFL, RobotMap.encoderFL, 0);
+    testSwerveModule = new SwerveModule(1, RobotMap.angleMotorFL, RobotMap.driveMotorFL, RobotMap.encoderFL, 0);
     oi = new OI(tableInstance);
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
@@ -66,7 +65,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     SmartDashboard.putNumber("Encoder Value", Robot.driveSystem.testEncoder.getAverageVoltage());
-    SmartDashboard.putNumber("Test Voltage", Robot.driveSystem.testV.getAverageVoltage());
 
   }
 
