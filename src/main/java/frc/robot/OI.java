@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.cmdDecreaseEncoder;
 import frc.robot.commands.cmdDriveWithEncoder;
-import frc.robot.commands.cmdEncoderPositions;
 import frc.robot.commands.cmdIncreaseEncoder;
 import frc.robot.input.JoystickX3D;
 

@@ -27,6 +27,10 @@ public class SwerveModule extends Subsystem implements PIDOutput {
   // here. Call these from Commands.
   private final int moduleNumber;
   private final double mZeroOffset;
+  private double driveGearRatio = 1;
+  private double driveWheelRadius = 2; // find right numbers
+  private boolean angleMotorJam = false;
+  private long mStallTimeBegin = Long.MAX_VALUE;
 
   private final CANSparkMax mAngleMotor;
   private final CANSparkMax mDriveMotor;
@@ -175,6 +179,32 @@ public class SwerveModule extends Subsystem implements PIDOutput {
       speed = -speed;
     }
     pidDrive.setReference(speed, ControlType.kVelocity);
+  }
+
+  public void setDriveGearRatio(double ratio) {
+    driveGearRatio = ratio;
+  }
+
+  public double getDriveWheelRadius() {
+    return driveWheelRadius;
+  }
+
+  public void setDriveWheelRadius(double radius) {
+    driveWheelRadius = radius;
+  }
+
+  public double getTargetAngle() {
+    return lastTargetAngle;
+  }
+
+  public void resetMotor() {
+    angleMotorJam = false;
+    mStallTimeBegin = Long.MAX_VALUE;
+    SmartDashboard.putBoolean("Motor Jammed" + moduleNumber, angleMotorJam);
+  }
+
+  public void setMotionConstraints(double maxAcceleration, double maxVelocity) {
+    // need to set max acceleration and max velocity in the sparks
   }
 
   @Override
