@@ -8,48 +8,21 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Robot;
-import frc.robot.subsystems.HolonomicDriveTrain;
 
-public class cmdHolonomicDrive extends Command {
-  private final HolonomicDriveTrain mDrivetrain;
-
-  public cmdHolonomicDrive(HolonomicDriveTrain drivetrain) {
-    mDrivetrain = drivetrain;
-
-    requires(drivetrain);
+public class cmdToggleFieldOriented extends Command {
+  public cmdToggleFieldOriented() {
+    // Use requires() here to declare subsystem dependencies
+    // eg. requires(chassis);
   }
 
-  private double deadband(double input) {
-    if (Math.abs(input) < 0.05)
-      return 0;
-    return input;
+  // Called just before this Command runs the first time
+  @Override
+  protected void initialize() {
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-
-    double forward = -Robot.getOI().getJoystick().getYAxis();
-
-    double strafe = Robot.getOI().getJoystick().getXAxis();
-
-    double rotation = Robot.getOI().getJoystick().getZAxis();
-
-    forward *= Math.abs(forward);
-    strafe *= Math.abs(strafe);
-    rotation *= Math.abs(rotation);
-
-    forward = deadband(forward);
-    strafe = deadband(strafe);
-    rotation = deadband(rotation);
-
-    SmartDashboard.putNumber("Forward", forward);
-    SmartDashboard.putNumber("Strafe", strafe);
-    SmartDashboard.putNumber("Rotation", rotation);
-
-    mDrivetrain.holonomicDrive(forward, strafe, rotation);
   }
 
   // Make this return true when this Command no longer needs to run execute()

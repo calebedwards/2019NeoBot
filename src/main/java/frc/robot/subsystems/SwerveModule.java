@@ -27,7 +27,7 @@ public class SwerveModule extends Subsystem implements PIDOutput {
   // here. Call these from Commands.
   private final int moduleNumber;
   private final double mZeroOffset;
-  private double driveGearRatio = 1;
+  private double driveGearRatio = 4;
   private double driveWheelRadius = 2; // find right numbers
   private boolean angleMotorJam = false;
   private long mStallTimeBegin = Long.MAX_VALUE;

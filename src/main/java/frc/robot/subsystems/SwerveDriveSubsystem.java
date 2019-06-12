@@ -7,14 +7,11 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
-import org.usfirst.frc.team2910.robot.Robot;
+import frc.robot.RobotMap;
 
-import static org.usfirst.frc.team2910.robot.RobotMap.*;
-
-public class SwerveDriveSubsystem extends HolonomicDrivetrain {
+public class SwerveDriveSubsystem extends HolonomicDriveTrain {
   public static final double WHEELBASE = 14.5; // Swerve bot: 14.5 Comp bot: 20.5
   public static final double TRACKWIDTH = 13.5; // Swerve bot: 13.5 Comp bot: 25.5
 
@@ -24,7 +21,7 @@ public class SwerveDriveSubsystem extends HolonomicDrivetrain {
   /*
    * 0 is Front Right 1 is Front Left 2 is Back Left 3 is Back Right
    */
-  private SwerveDriveModule[] mSwerveModules;
+  private SwerveModule[] mSwerveModules;
 
   private AHRS mNavX = new AHRS(SPI.Port.kMXP, (byte) 200);
 
@@ -32,30 +29,17 @@ public class SwerveDriveSubsystem extends HolonomicDrivetrain {
     super(WIDTH, LENGTH);
     zeroGyro();
 
-    if (Robot.PRACTICE_BOT) {
-      mSwerveModules = new SwerveDriveModule[] { new SwerveDriveModule(0, new TalonSRX(3), new TalonSRX(4), 255.5859),
-          new SwerveDriveModule(1, new TalonSRX(6), new TalonSRX(5), 338.906),
-          new SwerveDriveModule(2, new TalonSRX(2), new TalonSRX(1), 13.359),
-          new SwerveDriveModule(3, new TalonSRX(7), new TalonSRX(8), 15.82), };
+    mSwerveModules = new SwerveModule[] {
+        new SwerveModule(1, RobotMap.angleMotorFL, RobotMap.driveMotorFL, RobotMap.encoderFL, 0),
+        new SwerveModule(2, RobotMap.angleMotorBL, RobotMap.driveMotorBL, RobotMap.encoderBL, 0),
+        new SwerveModule(3, RobotMap.angleMotorFR, RobotMap.driveMotorFR, RobotMap.encoderFR, 0),
+        new SwerveModule(4, RobotMap.angleMotorBR, RobotMap.driveMotorBR, RobotMap.encoderBR, 0)
 
-      mSwerveModules[0].setDriveInverted(true);
-      mSwerveModules[3].setDriveInverted(true);
-    } else {
-      mSwerveModules = new SwerveDriveModule[] {
-          new SwerveDriveModule(0, new TalonSRX(DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR),
-              new TalonSRX(DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR), 87.890),
-          new SwerveDriveModule(1, new TalonSRX(DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR),
-              new TalonSRX(DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR), 235.195),
-          new SwerveDriveModule(2, new TalonSRX(DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR),
-              new TalonSRX(DRIVETRAIN_BACK_RIGHT_DRIVE_MOTOR), 320.976),
-          new SwerveDriveModule(3, new TalonSRX(DRIVETRAIn_BACK_LEFT_ANGLE_MOTOR),
-              new TalonSRX(DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR), 245.742), };
+    };
+    mSwerveModules[2].setDriveInverted(true);
+    mSwerveModules[3].setDriveInverted(true);
 
-      mSwerveModules[0].setDriveInverted(true);
-      mSwerveModules[3].setDriveInverted(true);
-    }
-
-    for (SwerveDriveModule module : mSwerveModules) {
+    for (SwerveModule module : mSwerveModules) {
       module.setTargetAngle(0);
       module.setDriveGearRatio(5.7777);
       module.setDriveWheelRadius(module.getDriveWheelRadius() * 1.05);
@@ -87,14 +71,13 @@ public class SwerveDriveSubsystem extends HolonomicDrivetrain {
   public double getGyroAngle() {
     double angle = mNavX.getAngle() - getAdjustmentAngle();
     angle %= 360;
-    if (angle < 0)
+    if (angle < 0) {
       angle += 360;
-
-    if (Robot.PRACTICE_BOT) {
-      return angle;
-    } else {
-      return 360 - angle;
     }
+
+    return angle;
+
+    // or subtract from 360
   }
 
   public double getGyroRate() {
@@ -110,7 +93,7 @@ public class SwerveDriveSubsystem extends HolonomicDrivetrain {
     return angle;
   }
 
-  public SwerveDriveModule getSwerveModule(int i) {
+  public SwerveModule getSwerveModule(int i) {
     return mSwerveModules[i];
   }
 
@@ -157,7 +140,7 @@ public class SwerveDriveSubsystem extends HolonomicDrivetrain {
 
   @Override
   public void stopDriveMotors() {
-    for (SwerveDriveModule module : mSwerveModules) {
+    for (SwerveModule module : mSwerveModules) {
       module.setTargetSpeed(0);
     }
   }
@@ -168,7 +151,7 @@ public class SwerveDriveSubsystem extends HolonomicDrivetrain {
     }
   }
 
-  public SwerveDriveModule[] getSwerveModules() {
+  public SwerveModule[] getSwerveModules() {
     return mSwerveModules;
   }
 
