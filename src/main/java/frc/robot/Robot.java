@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.DriveSystem;
+import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.SwerveModule;
 
 /**
@@ -24,15 +25,18 @@ import frc.robot.subsystems.SwerveModule;
  * project.
  */
 public class Robot extends TimedRobot {
-  public static OI oi;
+  private static OI mOi;
   public static DriveSystem driveSystem;
+  public static SwerveDriveSubsystem swerveDriveSubsystem;
   public static SwerveModule testSwerveModule;
   public static NetworkTableInstance tableInstance;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
-  // NetworkTableInstance nteRightEncoder;
-  // NetworkTableInstance nteLeftEncoder;
+
+  public static OI getOI() {
+    return mOi;
+  }
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -40,10 +44,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    mOi = new OI(this);
 
     driveSystem = new DriveSystem();
-    
-    oi = new OI(tableInstance);
+
+    mOi.registerControls();
+
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
 
@@ -142,5 +148,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+  }
+
+  public SwerveDriveSubsystem getDrivetrain() {
+    return swerveDriveSubsystem;
   }
 }

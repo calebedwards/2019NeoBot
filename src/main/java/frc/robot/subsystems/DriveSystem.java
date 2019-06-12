@@ -105,16 +105,16 @@ public class DriveSystem extends Subsystem {
 
   public void tankDrive() {
 
-    double left = Robot.oi.xboxDriver.getRawAxis(1);
-    double right = -Robot.oi.xboxDriver.getRawAxis(5);
+    double left = Robot.getOI().getXboxController().getLeftYValue();
+    double right = -Robot.getOI().getXboxController().getRightYValue();
     // driveControl.tankDrive(left, right);
     leftMotor.set(left);
     rightMotor.set(right);
   }
 
   public void curvatureDrive() {
-    double throttle = Robot.oi.xboxDriver.getRawAxis(1);
-    double turn = Robot.oi.xboxDriver.getRawAxis(4);
+    double throttle = Robot.getOI().getXboxController().getLeftYValue();
+    double turn = Robot.getOI().getXboxController().getRightXValue();
     if (Math.abs(throttle) < 0.1) {
       driveControl.curvatureDrive(0, -turn * 0.6, true);
     } else {

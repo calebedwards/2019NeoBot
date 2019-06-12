@@ -7,69 +7,47 @@
 
 package frc.robot;
 
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.cmdDecreaseEncoder;
 import frc.robot.commands.cmdDriveWithEncoder;
 import frc.robot.commands.cmdIncreaseEncoder;
+import frc.robot.commands.cmdSetFieldOriented;
 import frc.robot.input.JoystickX3D;
+import frc.robot.input.XboxController;
 
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-  public Joystick xboxDriver;
-  public JoystickX3D joystickDriver;
-  public JoystickButton yButton;
-  public JoystickButton aButton;
-  public JoystickButton xButton;
-  public JoystickButton bButton;
+  private XboxController xboxDriver = new XboxController(1);
+  private JoystickX3D joystickDriver = new JoystickX3D(0);
 
-  public OI(NetworkTableInstance tableInstance) {
-    xboxDriver = new Joystick(1);
-    joystickDriver = new JoystickX3D(0);
+  private Robot mRobot;
 
-    yButton = new JoystickButton(xboxDriver, 4);
-    yButton.whenPressed(new cmdDriveWithEncoder());
-
-    aButton = new JoystickButton(xboxDriver, 1);
-    aButton.whenPressed(new cmdDriveWithEncoder());
-
-    xButton = new JoystickButton(xboxDriver, 3);
-    xButton.whenPressed(new cmdDecreaseEncoder());
-
-    bButton = new JoystickButton(xboxDriver, 2);
-    bButton.whenPressed(new cmdIncreaseEncoder());
-
+  public OI(Robot robot) {
+    mRobot = robot;
   }
 
-  //// CREATING BUTTONS
-  // One type of button is a joystick button which is any button on a
-  //// joystick.
-  // You create one by telling it which joystick it's on and which button
-  // number it is.
-  // Joystick stick = new Joystick(port);
-  // Button button = new JoystickButton(stick, buttonNumber);
+  public void registerControls() {
 
-  // There are a few additional built in buttons you can use. Additionally,
-  // by subclassing Button you can create custom triggers and bind those to
-  // commands the same as any other Button.
+    xboxDriver.getYButton().whenPressed(new cmdDriveWithEncoder());
 
-  //// TRIGGERING COMMANDS WITH BUTTONS
-  // Once you have a button, it's trivial to bind it to a button in one of
-  // three ways:
+    xboxDriver.getAButton().whenPressed(new cmdDriveWithEncoder());
 
-  // Start the command when the button is pressed and let it run the command
-  // until it is finished as determined by it's isFinished method.
-  // button.whenPressed(new ExampleCommand());
+    xboxDriver.getXButton().whenPressed(new cmdDecreaseEncoder());
 
-  // Run the command while the button is being held down and interrupt it once
-  // the button is released.
-  // button.whileHeld(new ExampleCommand());
+    xboxDriver.getBButton().whenPressed(new cmdIncreaseEncoder());
 
-  // Start the command when the button is released and let it run the command
-  // until it is finished as determined by it's isFinished method.
-  // button.whenReleased(new ExampleCommand());
+    xboxDriver.getLeftBumperButton().whenPressed(new cmdSetFieldOriented(mRobot.getDrivetrain(), false));
+    xboxDriver.getLeftBumperButton().whenReleased(new cmdSetFieldOriented(mRobot.getDrivetrain(), true));
+  }
+
+  public XboxController getXboxController() {
+    return xboxDriver;
+  }
+
+  public JoystickX3D getJoystick() {
+    return joystickDriver;
+  }
+
 }

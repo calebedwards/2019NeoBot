@@ -7,7 +7,6 @@
 
 package frc.robot.input;
 
-
 import edu.wpi.first.wpilibj.Joystick;
 
 /**
@@ -21,17 +20,17 @@ public final class JoystickX3D extends Joystick {
 
     public double getYAxis() {
         return getRawAxis(1);
-        
+
     }
+
     public double getXAxis() {
         return getRawAxis(0);
-        
+
     }
+
     public double getZAxis() {
         return getRawAxis(2);
-        
+
     }
 
-    
 }
-

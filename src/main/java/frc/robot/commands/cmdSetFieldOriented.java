@@ -8,37 +8,30 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.subsystems.HolonomicDriveTrain;
 
 public class cmdSetFieldOriented extends Command {
-  public cmdSetFieldOriented() {
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
+
+  private final HolonomicDriveTrain drivetrain;
+  private final boolean isFieldOriented;
+
+  @Deprecated
+  public cmdSetFieldOriented(HolonomicDriveTrain drivetrain) {
+    this(drivetrain, true);
   }
 
-  // Called just before this Command runs the first time
-  @Override
-  protected void initialize() {
+  public cmdSetFieldOriented(HolonomicDriveTrain drivetrain, boolean isFieldOriented) {
+    this.drivetrain = drivetrain;
+    this.isFieldOriented = isFieldOriented;
   }
 
-  // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    drivetrain.setFieldOriented(isFieldOriented);
   }
 
-  // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
-  }
-
-  // Called once after isFinished returns true
-  @Override
-  protected void end() {
-  }
-
-  // Called when another command which requires one or more of the same
-  // subsystems is scheduled to run
-  @Override
-  protected void interrupted() {
+    return true;
   }
 }
