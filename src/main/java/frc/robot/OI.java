@@ -7,9 +7,6 @@
 
 package frc.robot;
 
-import frc.robot.commands.cmdDecreaseEncoder;
-import frc.robot.commands.cmdDriveWithEncoder;
-import frc.robot.commands.cmdIncreaseEncoder;
 import frc.robot.commands.cmdSetFieldOriented;
 import frc.robot.input.JoystickX3D;
 import frc.robot.input.XboxController;
@@ -30,21 +27,14 @@ public class OI {
 
   public void registerControls() {
 
-    xboxDriver.getYButton().whenPressed(new cmdDriveWithEncoder());
-
-    xboxDriver.getAButton().whenPressed(new cmdDriveWithEncoder());
-
-    xboxDriver.getXButton().whenPressed(new cmdDecreaseEncoder());
-
-    xboxDriver.getBButton().whenPressed(new cmdIncreaseEncoder());
-
     xboxDriver.getLeftBumperButton().whenPressed(new cmdSetFieldOriented(mRobot.getDrivetrain(), false));
     xboxDriver.getLeftBumperButton().whenReleased(new cmdSetFieldOriented(mRobot.getDrivetrain(), true));
+
   }
 
-  public XboxController getXboxController() {
-    return xboxDriver;
-  }
+  // public XboxController getXboxController() {
+  // return xboxDriver;
+  // }
 
   public JoystickX3D getJoystick() {
     return joystickDriver;

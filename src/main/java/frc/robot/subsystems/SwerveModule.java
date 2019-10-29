@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.SpeedController;
 
 /**
  * Add your docs here.
@@ -25,7 +26,7 @@ import edu.wpi.first.wpilibj.PIDOutput;
 public class SwerveModule extends Subsystem implements PIDOutput {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
-  private final int moduleNumber;
+  private final int mModuleNumber;
   private final double mZeroOffset;
   private double driveGearRatio = 4;
   private double driveWheelRadius = 2; // find right numbers
@@ -49,15 +50,16 @@ public class SwerveModule extends Subsystem implements PIDOutput {
 
   public AnalogInput mEncoder;
 
-  public AnalogInput testEncoder = new AnalogInput(RobotMap.encoderFL);
+  // public AnalogInput testEncoder = new AnalogInput(RobotMap.encoderFL);
 
   public SwerveModule(int moduleNumber, int angleMotorID, int driveMotorID, int encoderID, double zeroOffset) {
-    this.moduleNumber = moduleNumber;
-    this.mZeroOffset = zeroOffset;
-    this.mAngleMotor = new CANSparkMax(angleMotorID, MotorType.kBrushless);
-    this.mDriveMotor = new CANSparkMax(driveMotorID, MotorType.kBrushless);
+    mModuleNumber = moduleNumber;
+    mZeroOffset = zeroOffset;
+    mAngleMotor = new CANSparkMax(angleMotorID, MotorType.kBrushless);
+    mDriveMotor = new CANSparkMax(driveMotorID, MotorType.kBrushless);
+    mEncoder = new AnalogInput(encoderID);
     pidDrive = mDriveMotor.getPIDController();
-    this.mEncoder = new AnalogInput(encoderID);
+    angleMotorPIDController();
 
   }
 
@@ -91,6 +93,7 @@ public class SwerveModule extends Subsystem implements PIDOutput {
     SmartDashboard.putNumber("Max Drive Output", d_kMaxOutput);
     SmartDashboard.putNumber("Min Drive Output", d_kMinOutput);
     SmartDashboard.putNumber("Set Inches", 0);
+
   }
 
   public void angleMotorPIDController() {
@@ -102,9 +105,8 @@ public class SwerveModule extends Subsystem implements PIDOutput {
     a_kMaxOutput = 1.0;
     a_kMinOutput = -1.0;
     a_kToleranceVolts = 0;
-    pidAngle = new PIDController(a_kP, a_kI, a_kD, testEncoder, this);
+    pidAngle = new PIDController(a_kP, a_kI, a_kD, mEncoder, this);
     pidAngle.setInputRange(0, 5.0);
-    pidAngle.setOutputRange(-0.5, 1.0);
     pidAngle.setAbsoluteTolerance(a_kToleranceVolts);
     pidAngle.setContinuous(true);
     pidAngle.setOutputRange(a_kMinOutput, a_kMaxOutput);
@@ -116,6 +118,8 @@ public class SwerveModule extends Subsystem implements PIDOutput {
     SmartDashboard.putNumber("Max Angle Output", a_kMaxOutput);
     SmartDashboard.putNumber("Min Angle Output", a_kMinOutput);
     // SmartDashboard.putNumber("Set Angle Inches", 0);
+    pidAngle.enable();
+    pidAngle.setSetpoint(0);
   }
 
   private double angleToVoltage(double angle) {
@@ -136,7 +140,8 @@ public class SwerveModule extends Subsystem implements PIDOutput {
 
     targetAngle %= 360;
 
-    SmartDashboard.putNumber("Module Target Angle " + moduleNumber, targetAngle % 360);
+    SmartDashboard.putNumber("Module Target Angle " + mModuleNumber, targetAngle % 360);
+    SmartDashboard.putNumber("EncoderVoltage" + mModuleNumber, mEncoder.getVoltage());
 
     targetAngle += mZeroOffset;
 
@@ -178,7 +183,7 @@ public class SwerveModule extends Subsystem implements PIDOutput {
     if (driveInverted) {
       speed = -speed;
     }
-    pidDrive.setReference(speed, ControlType.kVelocity);
+    pidDrive.setReference(speed, ControlType.kDutyCycle);
   }
 
   public void setDriveGearRatio(double ratio) {
@@ -200,16 +205,25 @@ public class SwerveModule extends Subsystem implements PIDOutput {
   public void resetMotor() {
     angleMotorJam = false;
     mStallTimeBegin = Long.MAX_VALUE;
-    SmartDashboard.putBoolean("Motor Jammed" + moduleNumber, angleMotorJam);
+    SmartDashboard.putBoolean("Motor Jammed" + mModuleNumber, angleMotorJam);
   }
 
   public void setMotionConstraints(double maxAcceleration, double maxVelocity) {
     // need to set max acceleration and max velocity in the sparks
   }
 
+  public void testDriveMotor(double speed) {
+    mDriveMotor.set(speed);
+  }
+
+  public void testRotationMotor(double speed) {
+    mAngleMotor.set(speed);
+  }
+
   @Override
   public void pidWrite(double output) {
     angleSpeed = output;
+    mAngleMotor.set(output);
   }
 
 }

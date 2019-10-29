@@ -18,12 +18,10 @@ public class RobotMap {
   public static final int leftMotor = 2;
   public static final int rightMotor = 3;
 
-
-  public static final int encoderFL = 0;
-  public static final int encoderBL = 1;
-  public static final int encoderFR = 2;
-  public static final int encoderBR = 3;
-
+  public static final int encoderFL = 1;
+  public static final int encoderBL = 2;
+  public static final int encoderFR = 3;
+  public static final int encoderBR = 0;
 
   public static final int driveMotorFL = 2;
   public static final int angleMotorFL = 3;

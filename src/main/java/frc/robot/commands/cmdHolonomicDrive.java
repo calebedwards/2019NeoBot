@@ -36,6 +36,7 @@ public class cmdHolonomicDrive extends Command {
     double strafe = Robot.getOI().getJoystick().getXAxis();
 
     double rotation = Robot.getOI().getJoystick().getZAxis();
+    // System.out.printf("F:%f S:%f R:%f", forward, strafe, rotation);
 
     forward *= Math.abs(forward);
     strafe *= Math.abs(strafe);

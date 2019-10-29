@@ -7,13 +7,15 @@
 
 package frc.robot;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.DriveSystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.SwerveModule;
 
@@ -26,7 +28,6 @@ import frc.robot.subsystems.SwerveModule;
  */
 public class Robot extends TimedRobot {
   private static OI mOi;
-  public static DriveSystem driveSystem;
   public static SwerveDriveSubsystem swerveDriveSubsystem;
   public static SwerveModule testSwerveModule;
   public static NetworkTableInstance tableInstance;
@@ -46,7 +47,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     mOi = new OI(this);
 
-    driveSystem = new DriveSystem();
+    swerveDriveSubsystem = new SwerveDriveSubsystem();
 
     mOi.registerControls();
 
@@ -69,7 +70,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    SmartDashboard.putNumber("Encoder Value", Robot.driveSystem.testEncoder.getAverageVoltage());
+    // SmartDashboard.putNumber("Encoder Value",
+    // Robot.driveSystem.testEncoder.getAverageVoltage());
 
   }
 

@@ -7,16 +7,23 @@
 
 package frc.robot.subsystems;
 
+import java.io.Console;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.RobotMap;
+import frc.robot.commands.cmdHolonomicDrive;
 
 public class SwerveDriveSubsystem extends HolonomicDriveTrain {
+  // wheel base is the distance between the center of the left and right wheels
+  // track width is the distance between the center of the front and back wheels
   public static final double WHEELBASE = 14.5; // Swerve bot: 14.5 Comp bot: 20.5
   public static final double TRACKWIDTH = 13.5; // Swerve bot: 13.5 Comp bot: 25.5
 
-  public static final double WIDTH = 20; // Swerve bot: 20 Comp bot: 37
-  public static final double LENGTH = 19; // Swerve bot: 19 Comp bot: 32
+  public static final double WIDTH = 25; // Swerve bot: 20 Comp bot: 37
+  public static final double LENGTH = 25; // Swerve bot: 19 Comp bot: 32
 
   /*
    * 0 is Front Right 1 is Front Left 2 is Back Left 3 is Back Right
@@ -80,6 +87,20 @@ public class SwerveDriveSubsystem extends HolonomicDriveTrain {
     // or subtract from 360
   }
 
+  public void rotateWheel(double speed) {
+    for (SwerveModule module : mSwerveModules) {
+      module.testRotationMotor(speed);
+    }
+
+  }
+
+  public void driveWheel(double speed) {
+    for (SwerveModule module : mSwerveModules) {
+      module.testDriveMotor(speed);
+    }
+
+  }
+
   public double getGyroRate() {
     return mNavX.getRate();
   }
@@ -99,6 +120,13 @@ public class SwerveDriveSubsystem extends HolonomicDriveTrain {
 
   @Override
   public void holonomicDrive(double forward, double strafe, double rotation, boolean fieldOriented) {
+    // for (int i = 0; i < 4; i++) {
+    // mSwerveModules[i].testDriveMotor(0.1);
+    // mSwerveModules[i].testRotationMotor(0.05);
+
+    // }
+    // return;
+
     forward *= getSpeedMultiplier();
     strafe *= getSpeedMultiplier();
 
@@ -136,6 +164,12 @@ public class SwerveDriveSubsystem extends HolonomicDriveTrain {
       }
       mSwerveModules[i].setTargetSpeed(speeds[i]);
     }
+  }
+
+  @Override
+  protected void initDefaultCommand() {
+    setDefaultCommand(new cmdHolonomicDrive(this));
+    // Make command
   }
 
   @Override
