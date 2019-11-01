@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SpeedController;
 
 /**
@@ -54,7 +55,7 @@ public class SwerveModule extends Subsystem implements PIDOutput {
 
   public SwerveModule(int moduleNumber, int angleMotorID, int driveMotorID, int encoderID, double zeroOffset) {
     mModuleNumber = moduleNumber;
-    mZeroOffset = zeroOffset;
+    mZeroOffset = voltageToAngle(zeroOffset);
     mAngleMotor = new CANSparkMax(angleMotorID, MotorType.kBrushless);
     mDriveMotor = new CANSparkMax(driveMotorID, MotorType.kBrushless);
     mEncoder = new AnalogInput(encoderID);
@@ -75,8 +76,8 @@ public class SwerveModule extends Subsystem implements PIDOutput {
     d_kD = 0;
     d_kIz = 0;
     d_kFF = 0;
-    d_kMaxOutput = 1.0;
-    d_kMinOutput = -1.0;
+    d_kMaxOutput = 0.3;
+    d_kMinOutput = -0.3;
 
     pidDrive.setP(d_kP);
     pidDrive.setI(d_kI);
@@ -97,16 +98,17 @@ public class SwerveModule extends Subsystem implements PIDOutput {
   }
 
   public void angleMotorPIDController() {
-    a_kP = 0.07;// 0.07
+    a_kP = 0.5;// 0.07
     a_kI = 0.0;
-    a_kD = 0.09;// 0.08
+    a_kD = 0.0001;// 0.08
     a_kIz = 0;
     a_kFF = 0;
-    a_kMaxOutput = 0.5;
-    a_kMinOutput = -0.5;
-    a_kToleranceVolts = 0.5; // 5%
+    a_kMaxOutput = 1.0;
+    a_kMinOutput = -1.0;
+    a_kToleranceVolts = 0.01; // 5%
     pidAngle = new PIDController(a_kP, a_kI, a_kD, mEncoder, this);
-    pidAngle.setInputRange(minVoltage, maxVoltage);
+    maxVoltage = RobotController.getVoltage5V();
+    pidAngle.setInputRange(minVoltage, maxVoltage); // ddebug set to min and max
     pidAngle.setAbsoluteTolerance(a_kToleranceVolts);
     pidAngle.setContinuous(true);
     pidAngle.setOutputRange(a_kMinOutput, a_kMaxOutput);
@@ -119,7 +121,7 @@ public class SwerveModule extends Subsystem implements PIDOutput {
     SmartDashboard.putNumber("Min Angle Output", a_kMinOutput);
     // SmartDashboard.putNumber("Set Angle Inches", 0);
     pidAngle.enable();
-    pidAngle.setSetpoint(0);
+    pidAngle.setSetpoint(2.0);
   }
 
   private double angleToVoltage(double angle) {
@@ -141,7 +143,7 @@ public class SwerveModule extends Subsystem implements PIDOutput {
     SmartDashboard.putNumber("Module Target Angle " + mModuleNumber, targetAngle % 360);
     SmartDashboard.putNumber("EncoderVoltage" + mModuleNumber, mEncoder.getVoltage());
 
-    targetAngle += mZeroOffset;
+    targetAngle += mZeroOffset; // ddebug
     targetAngle %= 360;
 
     // // double currentAngle = mAngleMotor.getSelectedSensorPosition(0) * (360.0 /
@@ -177,7 +179,7 @@ public class SwerveModule extends Subsystem implements PIDOutput {
     targetAngle = angleToVoltage(targetAngle);
     SmartDashboard.putNumber("targetVoltage" + mModuleNumber, targetAngle);
 
-    pidAngle.setSetpoint(targetAngle);
+    pidAngle.setSetpoint(targetAngle); // ddebug set back to targetAngle
   }
 
   public void setTargetSpeed(double speed) {
@@ -227,12 +229,13 @@ public class SwerveModule extends Subsystem implements PIDOutput {
 
   @Override
   public void pidWrite(double output) {
-    angleSpeed = output;
-    if (Math.abs(output) > 0.1) {
-      mAngleMotor.set(output);
+    if (!pidAngle.onTarget()) { // ddebug
+      // angleSpeed = -output;
+      mAngleMotor.set(-output);
     } else {
-      mAngleMotor.set(0.0);
+      mAngleMotor.set(0);
     }
+
     SmartDashboard.putNumber("Output" + mModuleNumber, output);
   }
 

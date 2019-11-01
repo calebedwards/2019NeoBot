@@ -25,6 +25,7 @@ public class SwerveDriveSubsystem extends HolonomicDriveTrain {
 
   public static final double WIDTH = 25; // Swerve bot: 20 Comp bot: 37
   public static final double LENGTH = 25; // Swerve bot: 19 Comp bot: 32
+  public static final boolean enableDrive = true;
 
   /*
    * 0 is Front Right 1 is Front Left 2 is Back Left 3 is Back Right
@@ -38,10 +39,10 @@ public class SwerveDriveSubsystem extends HolonomicDriveTrain {
     zeroGyro();
 
     mSwerveModules = new SwerveModule[] {
-        new SwerveModule(1, RobotMap.angleMotorFL, RobotMap.driveMotorFL, RobotMap.encoderFL, 34.65),
-        new SwerveModule(2, RobotMap.angleMotorBL, RobotMap.driveMotorBL, RobotMap.encoderBL, 84.675),
-        new SwerveModule(3, RobotMap.angleMotorFR, RobotMap.driveMotorFR, RobotMap.encoderFR, 255.225),
-        new SwerveModule(4, RobotMap.angleMotorBR, RobotMap.driveMotorBR, RobotMap.encoderBR, 129.974)
+        new SwerveModule(1, RobotMap.angleMotorFL, RobotMap.driveMotorFL, RobotMap.encoderFL, 0.462),
+        new SwerveModule(2, RobotMap.angleMotorBL, RobotMap.driveMotorBL, RobotMap.encoderBL, 1.125),
+        new SwerveModule(3, RobotMap.angleMotorFR, RobotMap.driveMotorFR, RobotMap.encoderFR, 3.941),
+        new SwerveModule(4, RobotMap.angleMotorBR, RobotMap.driveMotorBR, RobotMap.encoderBR, 4.510)
 
     };
     mSwerveModules[2].setDriveInverted(true);
@@ -157,7 +158,7 @@ public class SwerveDriveSubsystem extends HolonomicDriveTrain {
       }
     }
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++) { // ddebug
       if (Math.abs(forward) > 0.05 || Math.abs(strafe) > 0.05 || Math.abs(rotation) > 0.05) {
         mSwerveModules[i].setTargetAngle(angles[i] + 180);
         SmartDashboard.putNumber("Sending Angle" + mSwerveModules[i].getModuleNumber(), angles[i] + 180);
@@ -166,7 +167,9 @@ public class SwerveDriveSubsystem extends HolonomicDriveTrain {
         SmartDashboard.putNumber("Sending Angle" + mSwerveModules[i].getModuleNumber(), -999);
 
       }
-      mSwerveModules[i].setTargetSpeed(speeds[i]);
+      if (enableDrive) {
+        mSwerveModules[i].setTargetSpeed(speeds[i]);
+      }
     }
   }
 

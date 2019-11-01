@@ -17,7 +17,7 @@ public abstract class HolonomicDriveTrain extends DriveTrain {
   // here. Call these from Commands.
 
   private double mAdjustmentAngle = 0;
-  private boolean mFieldOriented = true;
+  private boolean mFieldOriented = false;
 
   public HolonomicDriveTrain(double width, double length) {
     super(width, length);
@@ -35,7 +35,7 @@ public abstract class HolonomicDriveTrain extends DriveTrain {
     holonomicDrive(forward, strafe, rotation, isFieldOriented());
   }
 
-  public abstract void holonomicDrive(double forward, double strafe, double rotation, boolean feildOriented);
+  public abstract void holonomicDrive(double forward, double strafe, double rotation, boolean fieldOriented);
 
   @Override
   protected void initDefaultCommand() {
