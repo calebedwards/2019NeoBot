@@ -13,14 +13,15 @@ import java.util.logging.Logger;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
 import frc.robot.commands.cmdHolonomicDrive;
 
 public class SwerveDriveSubsystem extends HolonomicDriveTrain {
   // wheel base is the distance between the center of the left and right wheels
   // track width is the distance between the center of the front and back wheels
-  public static final double WHEELBASE = 14.5; // Swerve bot: 14.5 Comp bot: 20.5
-  public static final double TRACKWIDTH = 13.5; // Swerve bot: 13.5 Comp bot: 25.5
+  public static final double WHEELBASE = 18; // Swerve bot: 14.5 Comp bot: 20.5
+  public static final double TRACKWIDTH = 18; // Swerve bot: 13.5 Comp bot: 25.5
 
   public static final double WIDTH = 25; // Swerve bot: 20 Comp bot: 37
   public static final double LENGTH = 25; // Swerve bot: 19 Comp bot: 32
@@ -37,10 +38,10 @@ public class SwerveDriveSubsystem extends HolonomicDriveTrain {
     zeroGyro();
 
     mSwerveModules = new SwerveModule[] {
-        new SwerveModule(1, RobotMap.angleMotorFL, RobotMap.driveMotorFL, RobotMap.encoderFL, 0),
-        new SwerveModule(2, RobotMap.angleMotorBL, RobotMap.driveMotorBL, RobotMap.encoderBL, 0),
-        new SwerveModule(3, RobotMap.angleMotorFR, RobotMap.driveMotorFR, RobotMap.encoderFR, 0),
-        new SwerveModule(4, RobotMap.angleMotorBR, RobotMap.driveMotorBR, RobotMap.encoderBR, 0)
+        new SwerveModule(1, RobotMap.angleMotorFL, RobotMap.driveMotorFL, RobotMap.encoderFL, 34.65),
+        new SwerveModule(2, RobotMap.angleMotorBL, RobotMap.driveMotorBL, RobotMap.encoderBL, 84.675),
+        new SwerveModule(3, RobotMap.angleMotorFR, RobotMap.driveMotorFR, RobotMap.encoderFR, 255.225),
+        new SwerveModule(4, RobotMap.angleMotorBR, RobotMap.driveMotorBR, RobotMap.encoderBR, 129.974)
 
     };
     mSwerveModules[2].setDriveInverted(true);
@@ -159,8 +160,11 @@ public class SwerveDriveSubsystem extends HolonomicDriveTrain {
     for (int i = 0; i < 4; i++) {
       if (Math.abs(forward) > 0.05 || Math.abs(strafe) > 0.05 || Math.abs(rotation) > 0.05) {
         mSwerveModules[i].setTargetAngle(angles[i] + 180);
+        SmartDashboard.putNumber("Sending Angle" + mSwerveModules[i].getModuleNumber(), angles[i] + 180);
       } else {
         mSwerveModules[i].setTargetAngle(mSwerveModules[i].getTargetAngle());
+        SmartDashboard.putNumber("Sending Angle" + mSwerveModules[i].getModuleNumber(), -999);
+
       }
       mSwerveModules[i].setTargetSpeed(speeds[i]);
     }

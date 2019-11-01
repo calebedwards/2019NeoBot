@@ -31,7 +31,7 @@ public class cmdHolonomicDrive extends Command {
   @Override
   protected void execute() {
 
-    double forward = -Robot.getOI().getJoystick().getYAxis();
+    double forward = Robot.getOI().getJoystick().getYAxis();
 
     double strafe = Robot.getOI().getJoystick().getXAxis();
 

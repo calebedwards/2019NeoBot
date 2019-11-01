@@ -46,7 +46,7 @@ public class SwerveModule extends Subsystem implements PIDOutput {
   private double lastTargetAngle = 0;
   double angleSpeed;
   double minVoltage = 0.0;
-  double maxVoltage = 5.0;
+  double maxVoltage = 4.8;
 
   public AnalogInput mEncoder;
 
@@ -97,16 +97,16 @@ public class SwerveModule extends Subsystem implements PIDOutput {
   }
 
   public void angleMotorPIDController() {
-    a_kP = 0.0001;
-    a_kI = 0;
-    a_kD = 0;
+    a_kP = 0.07;// 0.07
+    a_kI = 0.0;
+    a_kD = 0.09;// 0.08
     a_kIz = 0;
     a_kFF = 0;
-    a_kMaxOutput = 1.0;
-    a_kMinOutput = -1.0;
-    a_kToleranceVolts = 0;
+    a_kMaxOutput = 0.5;
+    a_kMinOutput = -0.5;
+    a_kToleranceVolts = 0.5; // 5%
     pidAngle = new PIDController(a_kP, a_kI, a_kD, mEncoder, this);
-    pidAngle.setInputRange(0, 5.0);
+    pidAngle.setInputRange(minVoltage, maxVoltage);
     pidAngle.setAbsoluteTolerance(a_kToleranceVolts);
     pidAngle.setContinuous(true);
     pidAngle.setOutputRange(a_kMinOutput, a_kMaxOutput);
@@ -138,43 +138,44 @@ public class SwerveModule extends Subsystem implements PIDOutput {
 
     lastTargetAngle = targetAngle;
 
-    targetAngle %= 360;
-
     SmartDashboard.putNumber("Module Target Angle " + mModuleNumber, targetAngle % 360);
     SmartDashboard.putNumber("EncoderVoltage" + mModuleNumber, mEncoder.getVoltage());
 
     targetAngle += mZeroOffset;
+    targetAngle %= 360;
 
-    // double currentAngle = mAngleMotor.getSelectedSensorPosition(0) * (360.0 /
-    // 1024.0);
-    double currentAngle = voltageToAngle(mEncoder.getAverageVoltage());
-    double currentAngleMod = currentAngle % 360;
-    if (currentAngleMod < 0)
-      currentAngleMod += 360;
+    // // double currentAngle = mAngleMotor.getSelectedSensorPosition(0) * (360.0 /
+    // // 1024.0);
+    // double currentAngle = voltageToAngle(mEncoder.getAverageVoltage());
+    // double currentAngleMod = currentAngle % 360;
+    // if (currentAngleMod < 0)
+    // currentAngleMod += 360;
 
-    double delta = currentAngleMod - targetAngle;
+    // double delta = currentAngleMod - targetAngle;
 
-    if (delta > 180) {
-      targetAngle += 360;
-    } else if (delta < -180) {
-      targetAngle -= 360;
-    }
+    // if (delta > 180) {
+    // targetAngle += 360;
+    // } else if (delta < -180) {
+    // targetAngle -= 360;
+    // }
 
-    delta = currentAngleMod - targetAngle;
-    if (delta > 90 || delta < -90) {
-      if (delta > 90)
-        targetAngle += 180;
-      else if (delta < -90)
-        targetAngle -= 180;
-      mDriveMotor.setInverted(false);
-    } else {
-      mDriveMotor.setInverted(true);
-    }
+    // delta = currentAngleMod - targetAngle;
+    // if (delta > 90 || delta < -90) {
+    // if (delta > 90)
+    // targetAngle += 180;
+    // else if (delta < -90)
+    // targetAngle -= 180;
+    // mDriveMotor.setInverted(false);
+    // } else {
+    // mDriveMotor.setInverted(true);
+    // }
 
-    targetAngle += currentAngle - currentAngleMod;
+    // targetAngle += currentAngle - currentAngleMod;
+    SmartDashboard.putNumber("targetAngle" + mModuleNumber, targetAngle);
 
     // targetAngle *= 1024.0 / 360.0;
     targetAngle = angleToVoltage(targetAngle);
+    SmartDashboard.putNumber("targetVoltage" + mModuleNumber, targetAngle);
 
     pidAngle.setSetpoint(targetAngle);
   }
@@ -220,10 +221,24 @@ public class SwerveModule extends Subsystem implements PIDOutput {
     mAngleMotor.set(speed);
   }
 
+  public int getModuleNumber() {
+    return mModuleNumber;
+  }
+
   @Override
   public void pidWrite(double output) {
     angleSpeed = output;
-    mAngleMotor.set(output);
+    if (Math.abs(output) > 0.1) {
+      mAngleMotor.set(output);
+    } else {
+      mAngleMotor.set(0.0);
+    }
+    SmartDashboard.putNumber("Output" + mModuleNumber, output);
   }
+
+  // @Override
+  // public void onTarget() {
+
+  // }
 
 }
