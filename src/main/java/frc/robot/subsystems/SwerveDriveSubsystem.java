@@ -39,10 +39,10 @@ public class SwerveDriveSubsystem extends HolonomicDriveTrain {
     zeroGyro();
 
     mSwerveModules = new SwerveModule[] {
-        new SwerveModule(1, RobotMap.angleMotorFR, RobotMap.driveMotorFR, RobotMap.encoderFR, 0.986),
-        new SwerveModule(2, RobotMap.angleMotorFL, RobotMap.driveMotorFL, RobotMap.encoderFL, 1.691),
-        new SwerveModule(3, RobotMap.angleMotorBL, RobotMap.driveMotorBL, RobotMap.encoderBL, 4.426),
-        new SwerveModule(4, RobotMap.angleMotorBR, RobotMap.driveMotorBR, RobotMap.encoderBR, 4.476)
+        new SwerveModule(1, RobotMap.angleMotorFR, RobotMap.driveMotorFR, RobotMap.encoderFR, 0.162),
+        new SwerveModule(2, RobotMap.angleMotorFL, RobotMap.driveMotorFL, RobotMap.encoderFL, 0.959),
+        new SwerveModule(3, RobotMap.angleMotorBL, RobotMap.driveMotorBL, RobotMap.encoderBL, 2.189),
+        new SwerveModule(4, RobotMap.angleMotorBR, RobotMap.driveMotorBR, RobotMap.encoderBR, 3.578)
 
     };
     mSwerveModules[0].setDriveInverted(true);
