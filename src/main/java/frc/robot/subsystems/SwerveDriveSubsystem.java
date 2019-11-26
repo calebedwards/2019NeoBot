@@ -12,6 +12,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
@@ -38,11 +41,16 @@ public class SwerveDriveSubsystem extends HolonomicDriveTrain {
     super(WIDTH, LENGTH);
     zeroGyro();
 
+    double encoder1 = Preferences.getInstance().getDouble("encoder1", 0);
+    double encoder2 = Preferences.getInstance().getDouble("encoder2", 0);
+    double encoder3 = Preferences.getInstance().getDouble("encoder3", 0);
+    double encoder4 = Preferences.getInstance().getDouble("encoder4", 0);
+
     mSwerveModules = new SwerveModule[] {
-        new SwerveModule(1, RobotMap.angleMotorFR, RobotMap.driveMotorFR, RobotMap.encoderFR, 0.162),
-        new SwerveModule(2, RobotMap.angleMotorFL, RobotMap.driveMotorFL, RobotMap.encoderFL, 0.959),
-        new SwerveModule(3, RobotMap.angleMotorBL, RobotMap.driveMotorBL, RobotMap.encoderBL, 2.189),
-        new SwerveModule(4, RobotMap.angleMotorBR, RobotMap.driveMotorBR, RobotMap.encoderBR, 3.578)
+        new SwerveModule(1, RobotMap.angleMotorFR, RobotMap.driveMotorFR, RobotMap.encoderFR, encoder1),
+        new SwerveModule(2, RobotMap.angleMotorFL, RobotMap.driveMotorFL, RobotMap.encoderFL, encoder2),
+        new SwerveModule(3, RobotMap.angleMotorBL, RobotMap.driveMotorBL, RobotMap.encoderBL, encoder3),
+        new SwerveModule(4, RobotMap.angleMotorBR, RobotMap.driveMotorBR, RobotMap.encoderBR, encoder4)
 
     };
     mSwerveModules[0].setDriveInverted(true);
@@ -85,7 +93,6 @@ public class SwerveDriveSubsystem extends HolonomicDriveTrain {
     }
 
     return angle;
-
     // or subtract from 360
   }
 

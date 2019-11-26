@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.cmdSetEncoder;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.SwerveModule;
 
@@ -150,6 +151,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    if (Robot.getOI().xboxDriver.getAButton().get() == true) {
+      new cmdSetEncoder();
+    }
   }
 
   public SwerveDriveSubsystem getDrivetrain() {

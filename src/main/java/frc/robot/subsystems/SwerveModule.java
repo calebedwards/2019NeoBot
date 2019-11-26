@@ -28,6 +28,7 @@ public class SwerveModule extends Subsystem implements PIDOutput {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
   public static final boolean enableAngle = true;
+  public static final double encoderVolt = 0;
 
   private final int mModuleNumber;
   private final double mZeroOffset;
@@ -136,6 +137,11 @@ public class SwerveModule extends Subsystem implements PIDOutput {
 
   public void setDriveInverted(boolean inverted) {
     driveInverted = inverted;
+  }
+
+  public double getEncoderVoltage() {
+
+    return mEncoder.getVoltage();
   }
 
   public void setTargetAngle(double targetAngle) {

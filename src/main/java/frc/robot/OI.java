@@ -16,8 +16,8 @@ import frc.robot.input.XboxController;
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-  private XboxController xboxDriver = new XboxController(1);
-  private JoystickX3D joystickDriver = new JoystickX3D(0);
+  public XboxController xboxDriver = new XboxController(1);
+  public JoystickX3D joystickDriver = new JoystickX3D(0);
 
   private Robot mRobot;
 
