@@ -15,11 +15,10 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.RobotMap;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.Preferences;
 
 /**
  * Add your docs here.
@@ -31,7 +30,7 @@ public class SwerveModule extends Subsystem implements PIDOutput {
   public static final double encoderVolt = 0;
 
   private final int mModuleNumber;
-  private final double mZeroOffset;
+  private double mZeroOffset;
   private double driveGearRatio = 4;
   private double driveWheelRadius = 2; // find right numbers
   private boolean angleMotorJam = false;
@@ -58,7 +57,8 @@ public class SwerveModule extends Subsystem implements PIDOutput {
 
   public SwerveModule(int moduleNumber, int angleMotorID, int driveMotorID, int encoderID, double zeroOffset) {
     mModuleNumber = moduleNumber;
-    mZeroOffset = voltageToAngle(zeroOffset);
+    // mZeroOffset = voltageToAngle(zeroOffset);
+    retrieveZeroOffset();
     mAngleMotor = new CANSparkMax(angleMotorID, MotorType.kBrushless);
     mDriveMotor = new CANSparkMax(driveMotorID, MotorType.kBrushless);
     mEncoder = new AnalogInput(encoderID);
@@ -139,9 +139,16 @@ public class SwerveModule extends Subsystem implements PIDOutput {
     driveInverted = inverted;
   }
 
-  public double getEncoderVoltage() {
+  public void retrieveZeroOffset() {
+    String key = String.format("ZeroOffset%d", getModuleNumber());
+    System.out.println("Key is" + key);
+    mZeroOffset = Preferences.getInstance().getDouble(key, 0);
+  }
 
-    return mEncoder.getVoltage();
+  public void saveZeroOffset() {
+    mZeroOffset = voltageToAngle(mEncoder.getAverageVoltage());
+    String key = String.format("ZeroOffset%d", getModuleNumber());
+    Preferences.getInstance().putDouble(key, 0);
   }
 
   public void setTargetAngle(double targetAngle) {

@@ -7,13 +7,8 @@
 
 package frc.robot.subsystems;
 
-import java.io.Console;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,10 +36,10 @@ public class SwerveDriveSubsystem extends HolonomicDriveTrain {
     super(WIDTH, LENGTH);
     zeroGyro();
 
-    double encoder1 = Preferences.getInstance().getDouble("encoder1", 0);
-    double encoder2 = Preferences.getInstance().getDouble("encoder2", 0);
-    double encoder3 = Preferences.getInstance().getDouble("encoder3", 0);
-    double encoder4 = Preferences.getInstance().getDouble("encoder4", 0);
+    double encoder1 = Preferences.getInstance().getDouble("ZeroOffset1", 0);
+    double encoder2 = Preferences.getInstance().getDouble("ZeroOffset2", 0);
+    double encoder3 = Preferences.getInstance().getDouble("ZeroOffset3", 0);
+    double encoder4 = Preferences.getInstance().getDouble("ZeroOffset4", 0);
 
     mSwerveModules = new SwerveModule[] {
         new SwerveModule(1, RobotMap.angleMotorFR, RobotMap.driveMotorFR, RobotMap.encoderFR, encoder1),
@@ -83,6 +78,12 @@ public class SwerveDriveSubsystem extends HolonomicDriveTrain {
 
   public AHRS getNavX() {
     return mNavX;
+  }
+
+  public void saveZeroOffset() {
+    for (int i = 0; i < 4; i++) {
+      mSwerveModules[i].saveZeroOffset();
+    }
   }
 
   public double getGyroAngle() {
