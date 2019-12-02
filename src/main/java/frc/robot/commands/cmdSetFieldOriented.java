@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.HolonomicDriveTrain;
 
 public class cmdSetFieldOriented extends Command {
@@ -28,6 +29,7 @@ public class cmdSetFieldOriented extends Command {
   @Override
   protected void execute() {
     drivetrain.setFieldOriented(isFieldOriented);
+    SmartDashboard.putBoolean("FeildOriented", isFieldOriented);
   }
 
   @Override

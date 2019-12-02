@@ -9,6 +9,7 @@ package frc.robot;
 
 import javax.print.attribute.standard.JobHoldUntil;
 
+import frc.robot.commands.cmdSetEncoder;
 import frc.robot.commands.cmdSetFieldOriented;
 import frc.robot.input.JoystickX3D;
 import frc.robot.input.XboxController;
@@ -33,6 +34,7 @@ public class OI {
     xboxDriver.getLeftBumperButton().whenReleased(new cmdSetFieldOriented(mRobot.getDrivetrain(), true));
     joystickDriver.getTriggerButton().whenPressed(new cmdSetFieldOriented(mRobot.getDrivetrain(), false));
     joystickDriver.getTriggerButton().whenReleased(new cmdSetFieldOriented(mRobot.getDrivetrain(), true));
+    joystickDriver.getSideButton().whenPressed(new cmdSetEncoder());
 
   }
 

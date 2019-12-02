@@ -147,9 +147,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+
     if (Robot.getOI().xboxDriver.getAButton().get() == true
         || Robot.getOI().joystickDriver.getSideButton().get() == true) {
-      getDrivetrain().saveZeroOffset();
+      System.out.println("Button is Pressed");
+      getDrivetrain().saveAllZeroOffsets();
     }
   }
 

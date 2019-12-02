@@ -36,16 +36,11 @@ public class SwerveDriveSubsystem extends HolonomicDriveTrain {
     super(WIDTH, LENGTH);
     zeroGyro();
 
-    double encoder1 = Preferences.getInstance().getDouble("ZeroOffset1", 0);
-    double encoder2 = Preferences.getInstance().getDouble("ZeroOffset2", 0);
-    double encoder3 = Preferences.getInstance().getDouble("ZeroOffset3", 0);
-    double encoder4 = Preferences.getInstance().getDouble("ZeroOffset4", 0);
-
     mSwerveModules = new SwerveModule[] {
-        new SwerveModule(1, RobotMap.angleMotorFR, RobotMap.driveMotorFR, RobotMap.encoderFR, encoder1),
-        new SwerveModule(2, RobotMap.angleMotorFL, RobotMap.driveMotorFL, RobotMap.encoderFL, encoder2),
-        new SwerveModule(3, RobotMap.angleMotorBL, RobotMap.driveMotorBL, RobotMap.encoderBL, encoder3),
-        new SwerveModule(4, RobotMap.angleMotorBR, RobotMap.driveMotorBR, RobotMap.encoderBR, encoder4)
+        new SwerveModule(1, RobotMap.angleMotorFR, RobotMap.driveMotorFR, RobotMap.encoderFR),
+        new SwerveModule(2, RobotMap.angleMotorFL, RobotMap.driveMotorFL, RobotMap.encoderFL),
+        new SwerveModule(3, RobotMap.angleMotorBL, RobotMap.driveMotorBL, RobotMap.encoderBL),
+        new SwerveModule(4, RobotMap.angleMotorBR, RobotMap.driveMotorBR, RobotMap.encoderBR)
 
     };
     mSwerveModules[0].setDriveInverted(true);
@@ -80,7 +75,7 @@ public class SwerveDriveSubsystem extends HolonomicDriveTrain {
     return mNavX;
   }
 
-  public void saveZeroOffset() {
+  public void saveAllZeroOffsets() {
     for (int i = 0; i < 4; i++) {
       mSwerveModules[i].saveZeroOffset();
     }

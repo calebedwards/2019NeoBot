@@ -55,10 +55,10 @@ public class SwerveModule extends Subsystem implements PIDOutput {
 
   // public AnalogInput testEncoder = new AnalogInput(RobotMap.encoderFL);
 
-  public SwerveModule(int moduleNumber, int angleMotorID, int driveMotorID, int encoderID, double zeroOffset) {
+  public SwerveModule(int moduleNumber, int angleMotorID, int driveMotorID, int encoderID) {
     mModuleNumber = moduleNumber;
     // mZeroOffset = voltageToAngle(zeroOffset);
-    retrieveZeroOffset();
+    getZeroOffset();
     mAngleMotor = new CANSparkMax(angleMotorID, MotorType.kBrushless);
     mDriveMotor = new CANSparkMax(driveMotorID, MotorType.kBrushless);
     mEncoder = new AnalogInput(encoderID);
@@ -139,7 +139,7 @@ public class SwerveModule extends Subsystem implements PIDOutput {
     driveInverted = inverted;
   }
 
-  public void retrieveZeroOffset() {
+  public void getZeroOffset() {
     String key = String.format("ZeroOffset%d", getModuleNumber());
     System.out.println("Key is" + key);
     mZeroOffset = Preferences.getInstance().getDouble(key, 0);
@@ -149,6 +149,7 @@ public class SwerveModule extends Subsystem implements PIDOutput {
     mZeroOffset = voltageToAngle(mEncoder.getAverageVoltage());
     String key = String.format("ZeroOffset%d", getModuleNumber());
     Preferences.getInstance().putDouble(key, 0);
+
   }
 
   public void setTargetAngle(double targetAngle) {
