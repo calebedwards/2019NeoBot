@@ -23,7 +23,7 @@ public class SwerveDriveSubsystem extends HolonomicDriveTrain {
 
   public static final double WIDTH = 25; // Swerve bot: 20 Comp bot: 37
   public static final double LENGTH = 25; // Swerve bot: 19 Comp bot: 32
-  public static final boolean enableDrive = true;
+  public static boolean enableDrive = true;
 
   /*
    * 0 is Front Right 1 is Front Left 2 is Back Left 3 is Back Right

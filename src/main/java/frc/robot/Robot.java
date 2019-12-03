@@ -147,12 +147,16 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-
-    if (Robot.getOI().xboxDriver.getAButton().get() == true
-        || Robot.getOI().joystickDriver.getSideButton().get() == true) {
-      System.out.println("Button is Pressed");
+    if (Robot.getOI().joystickDriver.getRawButtonPressed(2) == true) {
       getDrivetrain().saveAllZeroOffsets();
     }
+  }
+
+  @Override
+  public void testInit() {
+
+    Robot.swerveDriveSubsystem.enableDrive = false;
+    Robot.testSwerveModule.enableAngle = false;
   }
 
   public SwerveDriveSubsystem getDrivetrain() {

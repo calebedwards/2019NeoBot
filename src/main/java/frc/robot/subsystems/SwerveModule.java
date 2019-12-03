@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj.Preferences;
 public class SwerveModule extends Subsystem implements PIDOutput {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
-  public static final boolean enableAngle = true;
+  public static boolean enableAngle = true;
   public static final double encoderVolt = 0;
 
   private final int mModuleNumber;
@@ -141,15 +141,15 @@ public class SwerveModule extends Subsystem implements PIDOutput {
 
   public void getZeroOffset() {
     String key = String.format("ZeroOffset%d", getModuleNumber());
-    System.out.println("Key is" + key);
     mZeroOffset = Preferences.getInstance().getDouble(key, 0);
+    SmartDashboard.putNumber(key, mZeroOffset);
   }
 
   public void saveZeroOffset() {
     mZeroOffset = voltageToAngle(mEncoder.getAverageVoltage());
     String key = String.format("ZeroOffset%d", getModuleNumber());
-    Preferences.getInstance().putDouble(key, 0);
-
+    Preferences.getInstance().putDouble(key, mZeroOffset);
+    SmartDashboard.putNumber(key, mZeroOffset);
   }
 
   public void setTargetAngle(double targetAngle) {
@@ -247,6 +247,7 @@ public class SwerveModule extends Subsystem implements PIDOutput {
   public void pidWrite(double output) {
 
     if (!enableAngle) {
+      mAngleMotor.set(0);
       return;
     }
     if (!pidAngle.onTarget() && enableAngle) {
